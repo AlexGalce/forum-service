@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import telran.java52.forum.dto.ForumAddCommentsDto;
 import telran.java52.forum.dto.ForumAddDto;
 import telran.java52.forum.dto.ForumDateDto;
@@ -18,6 +20,8 @@ import telran.java52.forum.dto.ForumMessageDto;
 import telran.java52.forum.service.ForumService;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/forum")
 public class ForumController{
 	
 	ForumService forumService;
@@ -34,16 +38,16 @@ public class ForumController{
 
 	@PutMapping ("/post/{id}/like")
 	public void addLike(@PathVariable String id) {
-		
+		forumService.addLike(id);
 	}
 
 	@GetMapping("/posts/author/{user}")
-	public ForumDto findPostByAuthor(@PathVariable String user) {
-		return forumService.findPostByAuthor(user);
+	public Iterable<ForumDto> findPostsByAuthor(@PathVariable String user) {
+		return forumService.findPostsByAuthor(user);
 	}
 
 	@PutMapping("/post/{id}/comment/{user}")
-	public ForumAddCommentsDto addComments(@PathVariable String id, @PathVariable String user, @RequestBody ForumMessageDto forumMessageDto) {
+	public ForumDto addComments(@PathVariable String id, @PathVariable String user, @RequestBody ForumMessageDto forumMessageDto) {
 		
 		return forumService.addComments(id, user, forumMessageDto);
 	}
@@ -55,13 +59,13 @@ public class ForumController{
 	}
 
 	@PostMapping("/posts/tags")
-	public ForumAddCommentsDto findPostsByTags(@RequestBody Set<String> tags) {
+	public Iterable<ForumDto> findPostsByTags(@RequestBody Set<String> tags) {
 		
 		return forumService.findPostsByTags(tags);
 	}
 
 	@PostMapping ("/posts/period")
-	public ForumAddCommentsDto findPostsByPeriod(@RequestBody ForumDateDto forumDateDto) {
+	public Iterable<ForumDto> findPostsByPeriod(@RequestBody ForumDateDto forumDateDto) {
 		
 		return forumService.findPostsByPeriod(forumDateDto);
 	}
