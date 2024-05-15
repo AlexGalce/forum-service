@@ -1,8 +1,8 @@
-package telran.java52.forum.dto;
-
+package telran.java52.post.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,15 +14,15 @@ import lombok.Singular;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ForumDto {
+public class PostDto {
 	String id;
     String title;
     String content;
     String author;
     LocalDateTime dateCreated;
     @Singular
-    List<String> tags;
+    Set<String> tags;
     Integer likes;
-    List<ForumAddCommentsDto> comments;
+    @Singular
+    List<CommentDto> comments;
 }
-    
