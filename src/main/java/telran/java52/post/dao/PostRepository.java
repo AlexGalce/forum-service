@@ -13,6 +13,6 @@ import telran.java52.post.model.Post;
 
 public interface PostRepository extends MongoRepository<Post, String> {
 	Stream<Post> findPostsByAuthorIgnoreCase(String author);
-	Stream<Post> findPostsByTagsIgnoreCase(List<String> tag);
+	Stream<Post> findPostsByTagsInIgnoreCase(List<String> tags);
 	Stream<Post> findByDateCreatedBetween(LocalDate dateCreatedFrom, LocalDate dateCreatedTo);
 }
