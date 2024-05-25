@@ -15,7 +15,7 @@ import telran.java52.post.dto.PostDto;
 import telran.java52.post.dto.exceptions.PostNotFoundException;
 import telran.java52.post.model.Comment;
 import telran.java52.post.model.Post;
-import telran.java52.student.dto.StudentDto;
+
 
 @Service
 @RequiredArgsConstructor
