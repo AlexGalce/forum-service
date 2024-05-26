@@ -1,6 +1,7 @@
 package telran.java52.security.filter;
 
 import java.io.IOException;
+import java.security.Principal;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,12 +17,13 @@ import lombok.RequiredArgsConstructor;
 import telran.java52.accounting.dao.UserAccountRepository;
 import telran.java52.accounting.model.Role;
 import telran.java52.accounting.model.UserAccount;
+import telran.java52.security.model.User;
 
 @Component
 @RequiredArgsConstructor
 @Order(20)
 public class AdminManagingRolesFilter implements Filter {
-	final UserAccountRepository userAccountRepository;
+	
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
@@ -29,9 +31,9 @@ public class AdminManagingRolesFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 		if (checkEndpoint(request.getMethod(), request.getServletPath())) {
-            String principal = request.getUserPrincipal().getName();
-            UserAccount userAccount = userAccountRepository.findById(principal).get();
-            if(!userAccount.getRoles().contains(Role.ADMINISTRATOR)){
+			User user = (User) request.getUserPrincipal();
+           
+            if(user == null || !user.getRoles().contains("ADMINISTRATOR")){
                 response.sendError(403, "You are not allowed to access this resource");
                 return;
             }

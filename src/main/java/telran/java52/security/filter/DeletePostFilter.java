@@ -19,6 +19,7 @@ import telran.java52.accounting.model.Role;
 import telran.java52.accounting.model.UserAccount;
 import telran.java52.post.dao.PostRepository;
 import telran.java52.post.model.Post;
+import telran.java52.security.model.User;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ import telran.java52.post.model.Post;
 public class DeletePostFilter implements Filter {
 
     final PostRepository postRepository;
-    final UserAccountRepository userAccountRepository;
+    
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
@@ -35,7 +36,7 @@ public class DeletePostFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         if (checkEndPoint(request.getMethod(), request.getServletPath())) {
             String principal = request.getUserPrincipal().getName();
-            UserAccount userAccount = userAccountRepository.findById(principal).get();
+            User user = (User) request.getUserPrincipal();
             String[] parts = request.getServletPath().split("/");
             String postId = parts[parts.length - 1];
             Post post = postRepository.findById(postId).orElse(null);
@@ -43,7 +44,7 @@ public class DeletePostFilter implements Filter {
                 response.sendError(404, "Not found");
                 return;
             }
-            if (!(principal.equals(post.getAuthor()) || userAccount.getRoles().contains(Role.MODERATOR))) {
+            if (!(principal.equals(post.getAuthor()) || user.getRoles().contains("MODERATOR"))) {
                 response.sendError(403, "You do not have permission to access this resource");
                 return;
             }
