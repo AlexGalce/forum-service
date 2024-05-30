@@ -15,15 +15,14 @@ import telran.java52.post.dto.PostDto;
 import telran.java52.post.dto.exceptions.PostNotFoundException;
 import telran.java52.post.model.Comment;
 import telran.java52.post.model.Post;
-import telran.java52.student.dto.StudentDto;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
+
 	final PostRepository postRepository;
 	final ModelMapper modelMapper;
-	
-	
+
 	@Override
 	public PostDto addNewPost(String author, NewPostDto newPostDto) {
 		Post post = modelMapper.map(newPostDto, Post.class);
@@ -41,28 +40,27 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostDto removePost(String id) {
 		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-		postRepository.deleteById(id);
+		postRepository.delete(post);
 		return modelMapper.map(post, PostDto.class);
 	}
 
 	@Override
 	public PostDto updatePost(String id, NewPostDto newPostDto) {
-		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-		String content = newPostDto.getContent();
-		if (content !=null) {
-			post.setContent(content);
-		}
-		String title = newPostDto.getTitle();
-		if (title != null) {
-			post.setTitle(title);
-		}
-		Set<String> tags = newPostDto.getTags();
-		if (tags != null) {
-			tags.forEach(post::addTag);
-		}
-		post = postRepository.save(post);
-		
-		return modelMapper.map(post, PostDto.class);
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        String content = newPostDto.getContent();
+        if (content != null) {
+            post.setContent(content);
+        }
+        String title = newPostDto.getTitle();
+        if (title != null) {
+            post.setTitle(title);
+        }
+        Set<String> tags = newPostDto.getTags();
+        if (tags != null) {
+        	tags.forEach(post::addTag);
+        }
+        post = postRepository.save(post);
+        return modelMapper.map(post, PostDto.class);
 	}
 
 	@Override
@@ -79,28 +77,28 @@ public class PostServiceImpl implements PostService {
 		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         post.addLike();
         postRepository.save(post);
+
 	}
 
 	@Override
 	public Iterable<PostDto> findPostsByAuthor(String author) {
-		return postRepository.findPostsByAuthorIgnoreCase(author)
-							 .map(s -> modelMapper.map(s, PostDto.class))
-							 .toList();
-	}	
+		return postRepository.findByAuthorIgnoreCase(author)
+				.map(p -> modelMapper.map(p, PostDto.class))
+				.toList();
+	}
 
 	@Override
 	public Iterable<PostDto> findPostsByTags(List<String> tags) {
-		
-		return postRepository.findPostsByTagsInIgnoreCase(tags)
-							 .map(s -> modelMapper.map(s, PostDto.class))
-							 .toList();
+		return postRepository.findByTagsInIgnoreCase(tags)
+				.map(p -> modelMapper.map(p, PostDto.class))
+				.toList();
 	}
 
 	@Override
 	public Iterable<PostDto> findPostsByPeriod(DatePeriodDto datePeriodDto) {
 		return postRepository.findByDateCreatedBetween(datePeriodDto.getDateFrom(), datePeriodDto.getDateTo())
-							  .map(s -> modelMapper.map(s, PostDto.class))
-							  .toList();
+				.map(p -> modelMapper.map(p, PostDto.class))
+				.toList();
 	}
 
 }

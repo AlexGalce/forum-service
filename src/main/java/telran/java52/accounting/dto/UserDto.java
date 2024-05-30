@@ -14,8 +14,8 @@ import lombok.Singular;
 @Builder
 public class UserDto {
 	String login;
-    String firstName;
-    String lastName;
-    @Singular
-    Set<String> roles;
+	String firstName;
+	String lastName;
+	@Singular
+	Set<String> roles;
 }
